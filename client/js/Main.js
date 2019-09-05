@@ -2,7 +2,7 @@ var $apiEle = $("#apiCount"),
 proxyURL = 'https://localhost:8081/proxy/'; 
 
 var client = new forcetk.Client('', '', proxyURL);
- 
+ //test
 if($.cookie("AccToken") && $.cookie("APIVer") && $.cookie("InstURL"))
 { 
     client.setSessionToken($.cookie("AccToken"), $.cookie("APIVer"), $.cookie("InstURL"));
