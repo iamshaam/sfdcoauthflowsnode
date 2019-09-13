@@ -11,8 +11,11 @@ var express = require('express'),
 	nJwt = require('njwt'),  
 	apiVersion = 'v38.0',
 	domainName='localhost:8081',
-	jwt_consumer_key = '3MVG9szVa2RxsqBYmpkiG1QgjELvD9Z0NRvySRZKne.sBmUyKr9jPLaKWxAlFr3vvGGUGQskU3c.QPQyQuOel', 
-	consumer_secret='4390324792281178734',
+	//jwt_consumer_key = '3MVG9szVa2RxsqBYmpkiG1QgjELvD9Z0NRvySRZKne.sBmUyKr9jPLaKWxAlFr3vvGGUGQskU3c.QPQyQuOel', 
+	//consumer_secret='4390324792281178734',
+	jwt_consumer_key ='3MVG9G9pzCUSkzZsfvXmaMCzr.nedvXZhYvdPh__3M9w38Y2jqxYrLguaFTLRb.utE1yaWMSeK52wI4edXCix',
+	consumer_secret ='A612D49A57908E0E56AE778B462AED76A86E676EF8FD281C7642B97FDBA4B38D',
+
 	jwt_aud = 'https://login.salesforce.com', 
 	callbackURL='https://localhost:8081/oauthcallback.html';
 
@@ -91,10 +94,11 @@ app.get('/webServer', function (req,res){
 		sfdcURL = 'https://test.salesforce.com/services/oauth2/authorize' ;
 		state = 'webServerSandbox';
 	}
-	
-	 request({ 	url : sfdcURL+'?client_id='+
-				 jwt_consumer_key+'&redirect_uri='+
-				 callbackURL+'&response_type=code&state='+state,  
+	var tokenurl = sfdcURL+'?client_id='+
+	jwt_consumer_key+'&redirect_uri='+
+	callbackURL+'&response_type=code&state='+state;
+	console.log('webServer tokenurl:'+tokenurl);
+	 request({ 	url : tokenurl,  
 				method:'GET' 
 			}).pipe(res);
 	 
@@ -107,15 +111,17 @@ app.get('/webServer', function (req,res){
  */
 app.get('/webServerStep2', function (req,res){  
 	var state = req.query.state;
+	console.log('webServerStep2-state:'+state);
 	var sfdcURL = 'https://login.salesforce.com/services/oauth2/token' ;
-	if(state == 'webServerSandbox'){
+	if(state.includes('webServerSandbox')){
 		sfdcURL = 'https://test.salesforce.com/services/oauth2/token' ;
 	}
-	
-	 request({ 	url : sfdcURL+'?client_id='+
-				 jwt_consumer_key+'&redirect_uri='+
-				 callbackURL+'&grant_type=authorization_code&code='+
-				 req.query.code+'&client_secret'+consumer_secret,  
+	var tokenurl = sfdcURL+'?client_id='+
+	jwt_consumer_key+'&redirect_uri='+
+	callbackURL+'&grant_type=authorization_code&code='+
+	req.query.code+'&client_secret='+consumer_secret;
+	console.log('webServer2 tokenurl:'+tokenurl);
+	 request({ 	url : tokenurl,  
 				method:'POST' 
 			},
 			function(err, remoteResponse, remoteBody) {
